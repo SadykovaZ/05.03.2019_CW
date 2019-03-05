@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Linq;
+
 namespace _05._03._2019
 {
     public struct HabrNews
@@ -23,9 +25,9 @@ namespace _05._03._2019
     {
         static void Main(string[] args)
         {
-            foreach (HabrNews item in GetHabrNews())
-                Console.WriteLine(item);          
-
+            //foreach (HabrNews item in GetHabrNews())
+            //    Console.WriteLine(item);          
+            Ex3();
         }
 
         static List<HabrNews> GetHabrNews()
@@ -127,6 +129,37 @@ namespace _05._03._2019
                 }
             }
 
+        }
+
+        static void Ex3()
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.Load("note.xml");
+            //изменение
+            EditElement(doc, "to", "Yevgeniy");
+            //добавление
+            XmlElement priority = doc.CreateElement("priority");
+            priority.InnerText = "Lower";
+
+            var to = doc.SelectSingleNode("//note/to");
+
+
+            doc.DocumentElement.InsertAfter(priority, to);
+            //удвление
+            var priority1 = doc.SelectSingleNode("//note/to");
+            doc.DocumentElement.RemoveChild(priority);
+
+            doc.Save("note.xml");
+
+            XElement el = new XElement("note", new XElement("to", "Yevgeniy"),
+                                            new XElement("to", "Yevgeniy"),
+                                            new XElement("to", "Yevgeniy"),
+                                            new XElement("to", "Yevgeniy"));
+        }
+
+        static void EditElement(XmlDocument doc, string name, string value)
+        {
+            doc.DocumentElement.SelectSingleNode(name).InnerText = value;
         }
     }
 }
